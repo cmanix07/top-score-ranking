@@ -1,0 +1,1 @@
+INSERT INTO PLAYER (playerId,playerName,playerScore,scoreTime) VALUES(90000,"CHINTAMANI PRASAD",100,systimestamp );
