@@ -6,17 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ScoreDto extends BaseResponseDto implements Serializable {
+public class PlayerHistoryDto extends BaseResponseDto implements Serializable {
 
-    private int playerId;
-    private String playerName;
-    private int score;
-    private LocalDateTime scoreTime;
+    private Double average;
+    private Integer topScore;
+    private Integer lowScore;
+    private List<ScoreDto> playerScoreList;
+
 
 }

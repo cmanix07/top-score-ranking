@@ -1,5 +1,7 @@
 package com.cmani.oyo.topscoreranking.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "PLAYER")
 public class Player implements Serializable {
