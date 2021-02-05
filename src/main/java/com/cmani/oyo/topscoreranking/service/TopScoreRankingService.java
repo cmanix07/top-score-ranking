@@ -6,8 +6,13 @@ import com.cmani.oyo.topscoreranking.dto.ScoreDto;
 import com.cmani.oyo.topscoreranking.entity.Player;
 import com.cmani.oyo.topscoreranking.repository.TopScoreRankingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import javax.persistence.criteria.Predicate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,6 +48,11 @@ public class TopScoreRankingService {
     public PlayerHistoryDto getPlayerScoreHistory(String players) {
         List<Player> playerList = topScoreRankingRepository.findAllByPlayerName(players);
 
+        PlayerHistoryDto playerHistoryDto = buildPlayerHistoryDto(playerList);
+        return playerHistoryDto;
+    }
+
+    private PlayerHistoryDto buildPlayerHistoryDto(List<Player> playerList) {
         PlayerHistoryDto playerHistoryDto = PlayerHistoryDto.builder().build();
         List<ScoreDto> scoreDtoList = playerList.stream().map(p->{
             return ScoreDto.builder()
@@ -60,6 +70,29 @@ public class TopScoreRankingService {
             playerHistoryDto.setAverage(playerList.stream().mapToDouble(Player::getPlayerScore).average().getAsDouble());
         }
         playerHistoryDto.setPlayerScoreList(scoreDtoList);
-       return playerHistoryDto;
+        return playerHistoryDto;
     }
+
+    public PlayerHistoryDto getPlayerScoreList(List<String> players, LocalDateTime beforeTime, LocalDateTime afterTime, Pageable page) {
+        List<Player> playerList = topScoreRankingRepository.findAll((root,criteriaQuery,criteriaBuilder)->{
+            Predicate p = criteriaBuilder.conjunction();
+            if (!ObjectUtils.isEmpty(beforeTime)){
+                p = criteriaBuilder.and(p,criteriaBuilder.greaterThanOrEqualTo(root.get("scoreTime"),Timestamp.valueOf(beforeTime)));
+            }
+            if(!ObjectUtils.isEmpty(afterTime)){
+                p = criteriaBuilder.and(p,criteriaBuilder.greaterThanOrEqualTo(root.get("scoreTime"),Timestamp.valueOf(afterTime)));
+            }
+            if (!ObjectUtils.isEmpty(players)){
+                p = criteriaBuilder.and(p,root.get("playerName").in(players));
+            }
+            criteriaQuery.orderBy(criteriaBuilder.desc(root.get("scoreTime")));
+            return p;
+        },page).stream().collect(Collectors.toList());
+
+        return buildPlayerHistoryDto(playerList);
+        //topScoreRankingRepository.findAllPlayerScoreList((root,);
+
+
+    }
+
 }

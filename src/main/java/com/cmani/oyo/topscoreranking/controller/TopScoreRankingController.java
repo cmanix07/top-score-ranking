@@ -5,6 +5,8 @@ import com.cmani.oyo.topscoreranking.dto.ScoreDto;
 import com.cmani.oyo.topscoreranking.entity.Player;
 import com.cmani.oyo.topscoreranking.service.TopScoreRankingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping("/score-ranking/api/v1")
 public class TopScoreRankingController {
 
+    private static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     @Autowired
     private TopScoreRankingService topScoreRankingService;
 
@@ -48,14 +51,19 @@ public class TopScoreRankingController {
 
     @GetMapping("/player-history/{playerName}")
     public ResponseEntity<PlayerHistoryDto> getPlayerScoreHistory(@PathVariable("playerName") String players){
-        PlayerHistoryDto playerScoreHistoryList = topScoreRankingService.getPlayerScoreHistory(players);
-        return ResponseEntity.ok().body(playerScoreHistoryList);
+        PlayerHistoryDto playerScoreHistory = topScoreRankingService.getPlayerScoreHistory(players);
+        return ResponseEntity.ok().body(playerScoreHistory);
     }
 
-   @GetMapping("/player-history")
-    public ResponseEntity<List<PlayerHistoryDto>> getPlayerScoreList(List<Player> players, LocalDateTime beforeTime, LocalDateTime afterTime){
-
-        return null;
+   @PostMapping("/player-history")
+    public ResponseEntity<PlayerHistoryDto> getPlayerScoreList(@RequestBody(required = false) List<String> players,
+                                                                     @DateTimeFormat(pattern = DATE_FORMAT_YYYY_MM_DD)
+                                                                     @RequestBody(required = false) LocalDateTime beforeTime,
+                                                                     @DateTimeFormat(pattern = DATE_FORMAT_YYYY_MM_DD)
+                                                                     @RequestBody(required = false) LocalDateTime afterTime,
+                                                                                  Pageable page){
+      PlayerHistoryDto playerScoreHistoryList = topScoreRankingService.getPlayerScoreList(players,beforeTime,afterTime,page);
+        return ResponseEntity.ok().body(playerScoreHistoryList);
     }
 
 
