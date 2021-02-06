@@ -1,7 +1,6 @@
 package com.cmani.oyo.topscoreranking.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -13,7 +12,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "PLAYER")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Player implements Serializable {
 
     @Id
@@ -21,7 +23,7 @@ public class Player implements Serializable {
     @Column(name = "playerId")
     public Integer playerId;
 
-  //  @Pattern(regexp = "^([a-zA-Z]+/s/)*([a-zA-Z])$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Player name must contain only letters or space")
+  //@Pattern(regexp = "^([a-zA-Z]+/s/)*([a-zA-Z])$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Player name must contain only letters or space")
     @Column(name = "playerName")
     public String playerName;
 
@@ -31,5 +33,8 @@ public class Player implements Serializable {
 
     @Column(name="scoreTime")
     public LocalDateTime scoreTime;
+
+  //  @ManyToOne
+  //  private Score scores;
 
 }

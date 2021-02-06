@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PlayerDto extends BaseResponseDto implements Serializable {
+public class PlayerDto  implements Serializable {
     private int playerId;
     private String name;
 

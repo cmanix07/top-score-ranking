@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ScoreDto extends BaseResponseDto implements Serializable {
+public class ScoreDto implements Serializable {
 
     private int playerId;
     private String playerName;

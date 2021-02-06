@@ -12,12 +12,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PlayerHistoryDto extends BaseResponseDto implements Serializable {
+public class PlayerHistoryDto implements Serializable {
+
+    private int status;
+    private String message;
 
     private Double average;
     private Integer topScore;
     private Integer lowScore;
     private List<ScoreDto> playerScoreList;
+
+    private int totalPages;
+    private int pageNumber;
+    private int totalElements;
 
 
 }

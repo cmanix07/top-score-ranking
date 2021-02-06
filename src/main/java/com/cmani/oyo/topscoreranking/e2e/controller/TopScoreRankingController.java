@@ -1,10 +1,12 @@
-package com.cmani.oyo.topscoreranking.controller;
+package com.cmani.oyo.topscoreranking.e2e.controller;
 
 import com.cmani.oyo.topscoreranking.dto.PlayerHistoryDto;
 import com.cmani.oyo.topscoreranking.dto.ScoreDto;
 import com.cmani.oyo.topscoreranking.entity.Player;
 import com.cmani.oyo.topscoreranking.service.TopScoreRankingService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -13,23 +15,27 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
-
+@Api("score-ranking")
 @RestController
 @RequestMapping("/score-ranking/api/v1")
 public class TopScoreRankingController {
 
     private static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
-    @Autowired
+
+
     private TopScoreRankingService topScoreRankingService;
 
-    public TopScoreRankingController(){
-
+    public TopScoreRankingController(TopScoreRankingService topScoreRankingService){
+        this.topScoreRankingService = topScoreRankingService;
     };
 
 
-    @PostMapping("/player")
+    @PostMapping("/score")
+    @ResponseBody
     public ResponseEntity createOrUpdatePlayerScore(@RequestBody Player player){
 
         topScoreRankingService.createPlayerScore(player);
@@ -37,15 +43,15 @@ public class TopScoreRankingController {
     }
 
 
-    @GetMapping("/player/{playerId}")
-    public ResponseEntity<ScoreDto> getPlayerScore(@PathVariable("playerId") @Validated int playerId){
-        ScoreDto scoreDto = topScoreRankingService.getPlayerScore(playerId);
+    @GetMapping("/score/{playerId}")
+    public ResponseEntity<ScoreDto> getPlayerScoreById(@PathVariable("playerId") @Validated int playerId){
+        ScoreDto scoreDto = topScoreRankingService.getPlayerScoreById(playerId);
         return ResponseEntity.ok(scoreDto);
     }
 
-    @DeleteMapping("/player/{playerId}")
-    public ResponseEntity deletePlayerScore(@PathVariable("playerId") int playerId ){
-         topScoreRankingService.deletePlayerScore(playerId);
+    @DeleteMapping("/score/{playerId}")
+    public ResponseEntity deletePlayerScoreById(@PathVariable("playerId") int playerId ){
+         topScoreRankingService.deletePlayerScoreById(playerId);
          return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -55,16 +61,15 @@ public class TopScoreRankingController {
         return ResponseEntity.ok().body(playerScoreHistory);
     }
 
-   @PostMapping("/player-history")
-    public ResponseEntity<PlayerHistoryDto> getPlayerScoreList(@RequestBody(required = false) List<String> players,
-                                                                     @DateTimeFormat(pattern = DATE_FORMAT_YYYY_MM_DD)
-                                                                     @RequestBody(required = false) LocalDateTime beforeTime,
-                                                                     @DateTimeFormat(pattern = DATE_FORMAT_YYYY_MM_DD)
-                                                                     @RequestBody(required = false) LocalDateTime afterTime,
-                                                                                  Pageable page){
+   @GetMapping("/player-history")
+    public ResponseEntity<PlayerHistoryDto> getPlayerScoreList(@RequestParam(required = false) List<String> players,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                                     @RequestParam(required = false) Date beforeTime,
+                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                                     @RequestParam(required = false) Date afterTime,
+                                                                     Pageable page){
       PlayerHistoryDto playerScoreHistoryList = topScoreRankingService.getPlayerScoreList(players,beforeTime,afterTime,page);
         return ResponseEntity.ok().body(playerScoreHistoryList);
     }
-
 
 }
