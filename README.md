@@ -3,6 +3,14 @@
 Basic Java Spring Test Application: Top Score Ranking Game System
 Build Restful API for a simple Note-Taking application using Spring Boot, H2 DB, JPA and Gradle.
 
+Note: This application has limitation such as 
+1. Proper validation mapping and reponse messages in case of exception or error
+2. Proper pagination enhancements
+3. Junit tested for service class
+4. Integration testing for negative scenarios
+
+
+
 ## Requirements
 
 1. Java - 1.11.x
