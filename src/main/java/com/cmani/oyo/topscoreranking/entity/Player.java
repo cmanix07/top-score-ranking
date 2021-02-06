@@ -1,11 +1,9 @@
 package com.cmani.oyo.topscoreranking.entity;
 
 import lombok.*;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -23,7 +21,6 @@ public class Player implements Serializable {
     @Column(name = "playerId")
     public Integer playerId;
 
-  //@Pattern(regexp = "^([a-zA-Z]+/s/)*([a-zA-Z])$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Player name must contain only letters or space")
     @Column(name = "playerName")
     public String playerName;
 

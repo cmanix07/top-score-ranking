@@ -1,4 +1,4 @@
-package com.cmani.oyo.topscoreranking.e2e.controller.swagger;
+package com.cmani.oyo.topscoreranking.controller.swagger;
 
 
 import org.springframework.context.annotation.Bean;

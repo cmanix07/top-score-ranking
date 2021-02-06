@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.criteria.Predicate;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -29,6 +30,7 @@ public class TopScoreRankingService {
         this.topScoreRankingRepository = topScoreRankingRepository;
     }
 
+    @Transactional
     public void createPlayerScore(Player player) {
         topScoreRankingRepository.save(player);
     }
@@ -59,8 +61,8 @@ public class TopScoreRankingService {
 
     }
 
-    public PlayerHistoryDto getPlayerScoreList(List<String> players, Date beforeTime, Date afterTime, Pageable page) {
-        List<Player> playerList = topScoreRankingRepository.findAll((root,criteriaQuery,criteriaBuilder)->{
+    public Page<ScoreDto> getPlayerScoreList(List<String> players, Date beforeTime, Date afterTime, Pageable page) {
+        return topScoreRankingRepository.findAll((root,criteriaQuery,criteriaBuilder)->{
             Predicate p = criteriaBuilder.conjunction();
             if (!ObjectUtils.isEmpty(beforeTime)){
                 p = criteriaBuilder.and(p,criteriaBuilder.greaterThanOrEqualTo(root.get("scoreTime"),new Timestamp(beforeTime.getTime()).toLocalDateTime()));
@@ -73,10 +75,15 @@ public class TopScoreRankingService {
             }
             criteriaQuery.orderBy(criteriaBuilder.desc(root.get("scoreTime")));
             return p;
-        },page).stream().collect(Collectors.toList());
+        },page).map(p -> {
+            return ScoreDto.builder()
+                    .playerId(p.playerId)
+                    .playerName(p.playerName)
+                    .score(p.playerScore)
+                    .scoreTime(p.scoreTime)
+                    .build();
+        });
 
-//new PageImpl<PlayerHistoryDto>((List.of(buildPlayerHistoryDto(playerList))));
-        return buildPlayerHistoryDto(new PageImpl<Player>(playerList));
 
     }
 

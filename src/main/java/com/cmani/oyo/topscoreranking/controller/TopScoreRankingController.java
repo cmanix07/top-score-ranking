@@ -1,4 +1,4 @@
-package com.cmani.oyo.topscoreranking.e2e.controller;
+package com.cmani.oyo.topscoreranking.controller;
 
 import com.cmani.oyo.topscoreranking.dto.PlayerHistoryDto;
 import com.cmani.oyo.topscoreranking.dto.ScoreDto;
@@ -62,14 +62,14 @@ public class TopScoreRankingController {
     }
 
    @GetMapping("/player-history")
-    public ResponseEntity<PlayerHistoryDto> getPlayerScoreList(@RequestParam(required = false) List<String> players,
+    public ResponseEntity<Page<ScoreDto>> getPlayerScoreList(@RequestParam(required = false) List<String> players,
                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd")
                                                                      @RequestParam(required = false) Date beforeTime,
                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd")
                                                                      @RequestParam(required = false) Date afterTime,
                                                                      Pageable page){
-      PlayerHistoryDto playerScoreHistoryList = topScoreRankingService.getPlayerScoreList(players,beforeTime,afterTime,page);
-        return ResponseEntity.ok().body(playerScoreHistoryList);
+       Page<ScoreDto> playerScoreDto = topScoreRankingService.getPlayerScoreList(players,beforeTime,afterTime,page);
+        return ResponseEntity.ok().body(playerScoreDto);
     }
 
 }
